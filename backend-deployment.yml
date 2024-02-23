@@ -16,9 +16,23 @@ spec:
         type: backend
     spec:
       containers:
-      - name: backend-container
-        image: hyungdoyou/be:2.VERSION
-        envFrom:
-          - configMapRef:
-              name: backendconfig
+        - name: backend-container
+          image: hyungdoyou/be:2.VERSION
+          resources:
+            requests:
+              memory: "512m"
+              cpu: "100m"
+            limits:
+              memory: "3Gi"
+              cpu: "2000m"
+          readinessProbe:
+            httpGet:
+              path: /product/list/1/3
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 2
+            successThreshold: 3
+          envFrom:
+            - configMapRef:
+                name: backend-config
       terminationGracePeriodSeconds: 5
